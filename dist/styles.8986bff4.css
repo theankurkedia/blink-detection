@@ -6,7 +6,7 @@ body {
     rgba(71, 53, 128, 1) 0%,
     rgba(26, 55, 83, 1) 100%
   );
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* mobile-first styles */
@@ -66,7 +66,7 @@ main {
   text-align: center;
   border-radius: 5px 5px 0 0;
   font-size: 20px;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .info {
@@ -92,21 +92,8 @@ main {
   font-weight: lighter;
 }
 
-.keyboard {
-  background-color: rgb(30, 42, 80);
-  border-radius: 5px;
-  box-shadow: 0 5px 10px 5px rgb(40, 42, 80);
-  border: 3px solid rgb(105, 223, 242);
-}
-
 .credit {
   font-size: 15px;
-}
-
-.letters {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  text-align: center;
 }
 
 .model-status {

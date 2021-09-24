@@ -41,20 +41,22 @@ async function renderPrediction() {
     flipHorizontal: true,
     predictIrises: true,
   });
-
+  // STEP: Detect a simple blink first
   if (predictions.length > 0) {
     predictions.forEach((prediction) => {
-      // positionXLeftIris = prediction.annotations.leftEyeIris[0][0];
-      // positionYLeftIris = prediction.annotations.leftEyeIris[0][1];
+      // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
 
-      // const faceBottomLeftX =
-      //   video.width - prediction.boundingBox.bottomRight[0]; // face is flipped horizontally so bottom right is actually bottom left.
-      // const faceBottomLeftY = prediction.boundingBox.bottomRight[1];
+      // let leftDY = prediction.annotations.leftEyeUpper0[4][1] - prediction.annotations.leftEyeUpper0[2][1];
+      // let rightDY = rightEyeIris[4][1] - rightEyeIris[2][1];
 
-      // const faceTopRightX = video.width - prediction.boundingBox.topLeft[0]; // face is flipped horizontally so top left is actually top right.
-      // const faceTopRightY = prediction.boundingBox.topLeft[1];
-
-      console.log('*** 🔥 prediction', JSON.stringify(prediction));
+      console.log(
+        JSON.stringify(prediction.annotations.rightEyeUpper0),
+        JSON.stringify(prediction.annotations.rightEyeLower0)
+        // leftDY.toFixed(1),
+        // 'right',
+        // rightDX.toFixed(1),
+        // rightDY.toFixed(1)
+      );
     });
   }
   return event;
