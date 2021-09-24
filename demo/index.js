@@ -1,4 +1,4 @@
-import wink from '../../index.js';
+import wink from '../index.js';
 
 const updateModelStatus = () => {
   const status = document.querySelector('.model-status');
