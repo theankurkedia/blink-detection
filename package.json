@@ -1,7 +1,7 @@
 {
   "name": "blink",
   "version": "0.0.1",
-  "description": "Detect the user's gaze direction using machine learning, to control interfaces",
+  "description": "Detect the user's eyes using machine learning, to control interfaces",
   "main": "demo/index.js",
   "author": "Ankur Kedia <hey@ankurkedia.com> (https://ankurkedia.com)",
   "engines": {

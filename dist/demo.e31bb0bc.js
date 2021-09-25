@@ -88130,7 +88130,10 @@ let amountStraightEvents = 0;
 const VIDEO_SIZE = 500;
 let positionXLeftIris;
 let positionYLeftIris;
-let event;
+let event; // NOTE: temporary, need to change it with z dimension.
+// NOTE: Observe the initial values then set the threshold
+
+const DyThreshold = 7;
 
 const isFaceRotated = landmarks => {
   const leftCheek = landmarks.leftCheek;
@@ -88163,13 +88166,35 @@ async function renderPrediction() {
   if (predictions.length > 0) {
     predictions.forEach(prediction => {
       // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
-      // let leftDY = prediction.annotations.leftEyeUpper0[4][1] - prediction.annotations.leftEyeUpper0[2][1];
-      // let rightDY = rightEyeIris[4][1] - rightEyeIris[2][1];
-      console.log(JSON.stringify(prediction.annotations.rightEyeUpper0), JSON.stringify(prediction.annotations.rightEyeLower0) // leftDY.toFixed(1),
-      // 'right',
-      // rightDX.toFixed(1),
-      // rightDY.toFixed(1)
-      );
+      // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
+      // NOTE: taking center point for now, can add more points for accuracy(mabye)
+      let rightLowerEyePoint = prediction.annotations.rightEyeUpper0[3];
+      let rightUpperEyePoint = prediction.annotations.rightEyeLower0[4];
+      let leftLowerEyePoint = prediction.annotations.leftEyeUpper0[3];
+      let leftUpperEyePoint = prediction.annotations.leftEyeLower0[4]; // let rightLowerEyePointA = prediction.annotations.rightEyeUpper0[2];
+      // let rightLowerEyePointC = prediction.annotations.rightEyeUpper0[4];
+      // let rightUpperEyePointA = prediction.annotations.rightEyeLower0[3];
+      // let rightUpperEyePointC = prediction.annotations.rightEyeLower0[5];
+
+      let rightDy = rightUpperEyePoint[1] - rightLowerEyePoint[1];
+      let leftDy = leftUpperEyePoint[1] - leftLowerEyePoint[1];
+      let rightClosed = rightDy < DyThreshold;
+      let leftClosed = leftDy < DyThreshold; // console.log(
+      //   // JSON.stringify(prediction.annotations.rightEyeUpper0),
+      //   // JSON.stringify(prediction.annotations.rightEyeLower0)
+      //   'Dy',
+      //   leftDy.toFixed(1),
+      //   rightDy.toFixed(1),
+      //   leftClosed ? 'closed' : 'open',
+      //   rightClosed ? 'closed' : 'open'
+      // );
+
+      event = {
+        left: leftClosed ? 'closed' : 'open',
+        right: rightClosed ? 'closed' : 'open' // wink: false,
+        // blink: false,
+
+      };
     });
   }
 
@@ -88211,7 +88236,7 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
 const wink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
-  getWinkPrediction: renderPrediction
+  getEyePrediction: renderPrediction
 };
 var _default = wink;
 exports.default = _default;
@@ -88237,10 +88262,27 @@ const videoElement = document.querySelector('video');
 const init = async () => {
   await _index.default.loadModel();
   await _index.default.setUpCamera(videoElement);
+  let leftEye = document.getElementById('left-eye');
+  let rightEye = document.getElementById('right-eye');
 
   const predict = async () => {
-    let result = await _index.default.getWinkPrediction();
-    updateModelStatus(); // console.log('*** 🔥 result', result);
+    let result = await _index.default.getEyePrediction();
+    updateModelStatus();
+    console.log('*** 🔥 result', result);
+
+    if (result) {
+      if (result.left === 'closed') {
+        leftEye.style.color = 'red';
+      } else {
+        leftEye.style.color = 'green';
+      }
+
+      if (result.right === 'closed') {
+        rightEye.style.color = 'red';
+      } else {
+        rightEye.style.color = 'green';
+      }
+    }
 
     let raf = requestAnimationFrame(predict);
   };

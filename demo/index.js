@@ -15,11 +15,25 @@ const init = async () => {
   await wink.loadModel();
   await wink.setUpCamera(videoElement);
 
+  let leftEye = document.getElementById('left-eye');
+  let rightEye = document.getElementById('right-eye');
   const predict = async () => {
-    let result = await wink.getWinkPrediction();
+    let result = await wink.getEyePrediction();
     updateModelStatus();
 
     // console.log('*** 🔥 result', result);
+    if (result) {
+      if (result.left === 'closed') {
+        leftEye.style.color = 'red';
+      } else {
+        leftEye.style.color = 'green';
+      }
+      if (result.right === 'closed') {
+        rightEye.style.color = 'red';
+      } else {
+        rightEye.style.color = 'green';
+      }
+    }
     let raf = requestAnimationFrame(predict);
   };
   predict();
