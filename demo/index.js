@@ -1,4 +1,4 @@
-import wink from '../index.js';
+import blink from '../index.js';
 
 const updateModelStatus = () => {
   const status = document.querySelector('.model-status');
@@ -12,23 +12,23 @@ const updateModelStatus = () => {
 const videoElement = document.querySelector('video');
 
 const init = async () => {
-  await wink.loadModel();
-  await wink.setUpCamera(videoElement);
+  await blink.loadModel();
+  await blink.setUpCamera(videoElement);
 
   let leftEye = document.getElementById('left-eye');
   let rightEye = document.getElementById('right-eye');
   const predict = async () => {
-    let result = await wink.getEyePrediction();
+    let result = await blink.getBlinkPrediction();
     updateModelStatus();
 
     // console.log('*** 🔥 result', result);
     if (result) {
-      if (result.left === 'closed') {
+      if (result.left) {
         leftEye.style.color = 'red';
       } else {
         leftEye.style.color = 'green';
       }
-      if (result.right === 'closed') {
+      if (result.right) {
         rightEye.style.color = 'red';
       } else {
         rightEye.style.color = 'green';
