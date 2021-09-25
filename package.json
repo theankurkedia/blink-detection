@@ -1,6 +1,6 @@
 {
   "name": "blink-detection",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Detect the user's blink and wink using machine learning",
   "main": "demo/index.js",
   "author": "Ankur Kedia <hey@ankurkedia.com> (https://ankurkedia.com)",
