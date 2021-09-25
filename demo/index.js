@@ -21,7 +21,6 @@ const init = async () => {
     let result = await blink.getBlinkPrediction();
     updateModelStatus();
 
-    // console.log('*** 🔥 result', result);
     if (result) {
       if (result.left) {
         leftEye.style.color = 'red';

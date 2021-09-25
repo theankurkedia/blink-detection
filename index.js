@@ -37,17 +37,20 @@ async function renderPrediction() {
       let rightDy = rightUpperEyePoint[1] - rightLowerEyePoint[1];
       let leftDy = leftUpperEyePoint[1] - leftLowerEyePoint[1];
 
+      let rightIrisZ = prediction.annotations.rightEyeIris[0][2].toFixed(2);
+      let letIrisZ = prediction.annotations.leftEyeIris[0][2].toFixed(2);
+
       let rightClosed = rightDy < DyThreshold;
       let leftClosed = leftDy < DyThreshold;
 
       // console.log(
+      //   letIrisZ,
+      //   '***'
       //   // JSON.stringify(prediction.annotations.rightEyeUpper0),
       //   // JSON.stringify(prediction.annotations.rightEyeLower0)
-      //   'Dy',
-      //   leftDy.toFixed(1),
-      //   rightDy.toFixed(1),
-      //   leftClosed ? 'closed' : 'open',
-      //   rightClosed ? 'closed' : 'open'
+      //   // 'Dy',
+      //   // leftDy.toFixed(1),
+      //   // rightDy.toFixed(1),
       // );
       event = {
         left: leftClosed,

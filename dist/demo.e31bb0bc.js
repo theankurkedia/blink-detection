@@ -88155,17 +88155,16 @@ async function renderPrediction() {
 
       let rightDy = rightUpperEyePoint[1] - rightLowerEyePoint[1];
       let leftDy = leftUpperEyePoint[1] - leftLowerEyePoint[1];
+      let rightIrisZ = prediction.annotations.rightEyeIris[0][2].toFixed(2);
+      let letIrisZ = prediction.annotations.leftEyeIris[0][2].toFixed(2);
       let rightClosed = rightDy < DyThreshold;
-      let leftClosed = leftDy < DyThreshold; // console.log(
-      //   // JSON.stringify(prediction.annotations.rightEyeUpper0),
-      //   // JSON.stringify(prediction.annotations.rightEyeLower0)
-      //   'Dy',
-      //   leftDy.toFixed(1),
-      //   rightDy.toFixed(1),
-      //   leftClosed ? 'closed' : 'open',
-      //   rightClosed ? 'closed' : 'open'
-      // );
-
+      let leftClosed = leftDy < DyThreshold;
+      console.log(letIrisZ, '***' // JSON.stringify(prediction.annotations.rightEyeUpper0),
+      // JSON.stringify(prediction.annotations.rightEyeLower0)
+      // 'Dy',
+      // leftDy.toFixed(1),
+      // rightDy.toFixed(1),
+      );
       event = {
         left: leftClosed,
         right: rightClosed // wink: false,
@@ -88244,7 +88243,7 @@ const init = async () => {
 
   const predict = async () => {
     let result = await _index.default.getBlinkPrediction();
-    updateModelStatus(); // console.log('*** 🔥 result', result);
+    updateModelStatus();
 
     if (result) {
       if (result.left) {
