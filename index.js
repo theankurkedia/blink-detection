@@ -10,30 +10,6 @@ const VIDEO_SIZE = 500;
 const DyThreshold = 7;
 
 let event;
-const isFaceRotated = (landmarks) => {
-  const leftCheek = landmarks.leftCheek;
-  const rightCheek = landmarks.rightCheek;
-  const midwayBetweenEyes = landmarks.midwayBetweenEyes;
-
-  const xPositionLeftCheek = video.width - leftCheek[0][0];
-  const xPositionRightCheek = video.width - rightCheek[0][0];
-  const xPositionMidwayBetweenEyes = video.width - midwayBetweenEyes[0][0];
-
-  const widthLeftSideFace = xPositionMidwayBetweenEyes - xPositionLeftCheek;
-  const widthRightSideFace = xPositionRightCheek - xPositionMidwayBetweenEyes;
-
-  const difference = widthRightSideFace - widthLeftSideFace;
-
-  if (widthLeftSideFace < widthRightSideFace && Math.abs(difference) > 5) {
-    return true;
-  } else if (
-    widthLeftSideFace > widthRightSideFace &&
-    Math.abs(difference) > 5
-  ) {
-    return true;
-  }
-  return false;
-};
 
 async function renderPrediction() {
   const predictions = await model.estimateFaces({
@@ -74,8 +50,8 @@ async function renderPrediction() {
       //   rightClosed ? 'closed' : 'open'
       // );
       event = {
-        left: leftClosed ? 'closed' : 'open',
-        right: rightClosed ? 'closed' : 'open',
+        left: leftClosed,
+        right: rightClosed,
         // wink: false,
         // blink: false,
       };
@@ -126,10 +102,10 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
   });
 };
 
-const wink = {
+const blink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
-  getEyePrediction: renderPrediction,
+  getBlinkPrediction: renderPrediction,
 };
 
-export default wink;
+export default blink;
