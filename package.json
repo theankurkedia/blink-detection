@@ -1,6 +1,6 @@
 {
   "name": "blink-detection",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Detect the user's blink and wink using machine learning",
   "main": "demo/index.js",
   "author": "Ankur Kedia <hey@ankurkedia.com> (https://ankurkedia.com)",
@@ -43,7 +43,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/theankurkedia/blink-detection.git"
+    "url": "git+https://github.com/theankurkedia/blink-detection.git"
   },
   "eslintConfig": {
     "env": {
@@ -57,5 +57,10 @@
   "type": "module",
   "eslintIgnore": [
     "dist/"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/theankurkedia/blink-detection/issues"
+  },
+  "homepage": "https://github.com/theankurkedia/blink-detection#readme",
+  "license": "MIT"
 }
