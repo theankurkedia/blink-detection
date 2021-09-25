@@ -5,7 +5,7 @@ Use machine learning in JavaScript to detect a blink and build blink-controlled 
 
 ## Demo
 
-Visit [https://gaze-keyboard.netlify.app/](https://gaze-keyboard.netlify.app/) _(Works well on mobile too!!)_ 😃
+Visit [https://blink-detection.vercel.app](https://blink-detection.vercel.app) _(Works well on mobile too!!)_ 😃
 
 ![](blink-demo.gif)
 
