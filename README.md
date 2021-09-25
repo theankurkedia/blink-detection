@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 # Blink
+=======
+# Wink Detection
+>>>>>>> 2d87e757f86934bd73d718e0c722794f452768bc
 
-Use machine learning in JavaScript to detect eye movements and build gaze-controlled experiences!
+Use machine learning in JavaScript to detect a wink and build wink-controlled experiences!
 
 ## Demo
 
