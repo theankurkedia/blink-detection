@@ -1,24 +1,19 @@
-<<<<<<< HEAD
-# Blink
-=======
-# Wink Detection
->>>>>>> 2d87e757f86934bd73d718e0c722794f452768bc
 
-Use machine learning in JavaScript to detect a wink and build wink-controlled experiences!
+# Blink Detection
+
+Use machine learning in JavaScript to detect a blink and build blink-controlled experiences!
 
 ## Demo
 
 Visit [https://gaze-keyboard.netlify.app/](https://gaze-keyboard.netlify.app/) _(Works well on mobile too!!)_ 😃
 
-![](gaze-demo.gif)
-
-_Inspired by the Android application ["Look to speak"](https://play.google.com/store/apps/details?id=com.androidexperiments.looktospeak)._
+![](blink-demo.gif)
 
 Uses Tensorflow.js's [face landmark detection model](https://www.npmjs.com/package/@tensorflow-models/face-landmarks-detection).
 
 ## Detection
 
-This tool detects when the user looks right, left, up and straight forward.
+This tool detects when the user blinks. It can also detects a wink.
 
 ## How to use
 
@@ -27,7 +22,7 @@ This tool detects when the user looks right, left, up and straight forward.
 As a module:
 
 ```bash
-npm install gaze-detection --save
+npm install blink-detection --save
 ```
 
 ### Code sample
@@ -35,13 +30,13 @@ npm install gaze-detection --save
 Start by importing it:
 
 ```js
-import gaze from 'gaze-detection';
+import blink from 'blink-detection';
 ```
 
 Load the machine learning model:
 
 ```js
-await gaze.loadModel();
+await blink.loadModel();
 ```
 
 Then, set up the camera feed needed for the detection. The `setUpCamera` method needs a `video` HTML element and, optionally, a camera device ID if you are using more than the default webcam.
@@ -69,9 +64,9 @@ Run the predictions:
 
 ```js
 const predict = async () => {
-  const gazePrediction = await gaze.getGazePrediction();
-  console.log('Gaze direction: ', gazePrediction); //will return 'RIGHT', 'LEFT', 'STRAIGHT' or 'TOP'
-  if (gazePrediction === 'RIGHT') {
+  const blinkPrediction = await blink.getBlinkPrediction();
+  console.log('Blink: ', blinkPrediction); //will return 'RIGHT', 'LEFT', 'STRAIGHT' or 'TOP'
+  if (blinkPrediction.left === true) {
     // do something when the user looks to the right
   }
   let raf = requestAnimationFrame(predict);
