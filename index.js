@@ -3,12 +3,13 @@ import * as tf from '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
 
 let model, video, rafID;
-let amountStraightEvents = 0;
 const VIDEO_SIZE = 500;
-let positionXLeftIris;
-let positionYLeftIris;
-let event;
 
+// NOTE: temporary, need to change it with z dimension.
+// NOTE: Observe the initial values then set the threshold
+const DyThreshold = 7;
+
+let event;
 const isFaceRotated = (landmarks) => {
   const leftCheek = landmarks.leftCheek;
   const rightCheek = landmarks.rightCheek;
@@ -45,18 +46,39 @@ async function renderPrediction() {
   if (predictions.length > 0) {
     predictions.forEach((prediction) => {
       // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
+      // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
+      // NOTE: taking center point for now, can add more points for accuracy(mabye)
+      let rightLowerEyePoint = prediction.annotations.rightEyeUpper0[3];
+      let rightUpperEyePoint = prediction.annotations.rightEyeLower0[4];
 
-      // let leftDY = prediction.annotations.leftEyeUpper0[4][1] - prediction.annotations.leftEyeUpper0[2][1];
-      // let rightDY = rightEyeIris[4][1] - rightEyeIris[2][1];
+      let leftLowerEyePoint = prediction.annotations.leftEyeUpper0[3];
+      let leftUpperEyePoint = prediction.annotations.leftEyeLower0[4];
+      // let rightLowerEyePointA = prediction.annotations.rightEyeUpper0[2];
+      // let rightLowerEyePointC = prediction.annotations.rightEyeUpper0[4];
+      // let rightUpperEyePointA = prediction.annotations.rightEyeLower0[3];
+      // let rightUpperEyePointC = prediction.annotations.rightEyeLower0[5];
 
-      console.log(
-        JSON.stringify(prediction.annotations.rightEyeUpper0),
-        JSON.stringify(prediction.annotations.rightEyeLower0)
-        // leftDY.toFixed(1),
-        // 'right',
-        // rightDX.toFixed(1),
-        // rightDY.toFixed(1)
-      );
+      let rightDy = rightUpperEyePoint[1] - rightLowerEyePoint[1];
+      let leftDy = leftUpperEyePoint[1] - leftLowerEyePoint[1];
+
+      let rightClosed = rightDy < DyThreshold;
+      let leftClosed = leftDy < DyThreshold;
+
+      // console.log(
+      //   // JSON.stringify(prediction.annotations.rightEyeUpper0),
+      //   // JSON.stringify(prediction.annotations.rightEyeLower0)
+      //   'Dy',
+      //   leftDy.toFixed(1),
+      //   rightDy.toFixed(1),
+      //   leftClosed ? 'closed' : 'open',
+      //   rightClosed ? 'closed' : 'open'
+      // );
+      event = {
+        left: leftClosed ? 'closed' : 'open',
+        right: rightClosed ? 'closed' : 'open',
+        // wink: false,
+        // blink: false,
+      };
     });
   }
   return event;
@@ -107,7 +129,7 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
 const wink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
-  getWinkPrediction: renderPrediction,
+  getEyePrediction: renderPrediction,
 };
 
 export default wink;

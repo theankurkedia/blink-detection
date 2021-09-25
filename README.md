@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+# Blink
+=======
 # Wink Detection
+>>>>>>> 2d87e757f86934bd73d718e0c722794f452768bc
 
 Use machine learning in JavaScript to detect a wink and build wink-controlled experiences!
 
@@ -31,7 +35,7 @@ npm install gaze-detection --save
 Start by importing it:
 
 ```js
-import gaze from "gaze-detection";
+import gaze from 'gaze-detection';
 ```
 
 Load the machine learning model:
@@ -43,7 +47,7 @@ await gaze.loadModel();
 Then, set up the camera feed needed for the detection. The `setUpCamera` method needs a `video` HTML element and, optionally, a camera device ID if you are using more than the default webcam.
 
 ```js
-const videoElement = document.querySelector("video");
+const videoElement = document.querySelector('video');
 
 const init = async () => {
   // Using the default webcam
@@ -53,7 +57,7 @@ const init = async () => {
   const mediaDevices = await navigator.mediaDevices.enumerateDevices();
   const camera = mediaDevices.find(
     (device) =>
-      device.kind === "videoinput" &&
+      device.kind === 'videoinput' &&
       device.label.includes(/* The label from the list of available devices*/)
   );
 
@@ -66,8 +70,8 @@ Run the predictions:
 ```js
 const predict = async () => {
   const gazePrediction = await gaze.getGazePrediction();
-  console.log("Gaze direction: ", gazePrediction); //will return 'RIGHT', 'LEFT', 'STRAIGHT' or 'TOP'
-  if (gazePrediction === "RIGHT") {
+  console.log('Gaze direction: ', gazePrediction); //will return 'RIGHT', 'LEFT', 'STRAIGHT' or 'TOP'
+  if (gazePrediction === 'RIGHT') {
     // do something when the user looks to the right
   }
   let raf = requestAnimationFrame(predict);
