@@ -11,9 +11,18 @@ const updateModelStatus = () => {
 
 const videoElement = document.querySelector('video');
 
+var raf;
 const init = async () => {
   await blink.loadModel();
   await blink.setUpCamera(videoElement);
+
+  let stopButton = document.getElementById('stop-button');
+  if (stopButton) {
+    stopButton.addEventListener('click', () => {
+      cancelAnimationFrame(raf);
+      console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
+    });
+  }
 
   let leftEye = document.getElementById('left-eye');
   let rightEye = document.getElementById('right-eye');
@@ -33,7 +42,9 @@ const init = async () => {
         rightEye.style.color = 'green';
       }
     }
-    let raf = requestAnimationFrame(predict);
+    // setTimeout(() => {
+    raf = requestAnimationFrame(predict);
+    // }, 400);
   };
   predict();
 };
