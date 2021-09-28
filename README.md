@@ -1,19 +1,18 @@
-
 # Blink Detection
 
 Use machine learning in JavaScript to detect a blink and build blink-controlled experiences!
 
 ## Demo
 
-Visit [https://blink-detection.vercel.app](https://blink-detection.vercel.app) _(Works well on mobile too!!)_ 😃
+Visit [https://blink-detection.vercel.app](https://blink-detection.vercel.app) _(Works on mobile too!!)_
 
-![](blink-demo.gif)
+<!-- ![](blink-demo.gif) -->
 
 Uses Tensorflow.js's [face landmark detection model](https://www.npmjs.com/package/@tensorflow-models/face-landmarks-detection).
 
 ## Detection
 
-This tool detects when the user blinks. It can also detects a wink.
+This tool detects when the user blinks. It can also detect a wink and separate eye blinks as well.
 
 ## How to use
 
@@ -65,9 +64,10 @@ Run the predictions:
 ```js
 const predict = async () => {
   const blinkPrediction = await blink.getBlinkPrediction();
-  console.log('Blink: ', blinkPrediction); //will return 'RIGHT', 'LEFT', 'STRAIGHT' or 'TOP'
-  if (blinkPrediction.left === true) {
-    // do something when the user looks to the right
+  console.log('Blink: ', blinkPrediction); // will return an object with values blink, wink, left, right indicating the state
+
+  if (blinkPrediction.blink === true) {
+    // do something when the user blinks
   }
   let raf = requestAnimationFrame(predict);
 };
