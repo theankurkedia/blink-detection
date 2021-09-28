@@ -20,7 +20,7 @@ const init = async () => {
   if (stopButton) {
     stopButton.addEventListener('click', () => {
       cancelAnimationFrame(raf);
-      console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
+      // console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
     });
   }
 

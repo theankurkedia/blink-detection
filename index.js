@@ -1,7 +1,7 @@
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 import * as tf from '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
-
+// import { populateTestBucket, getTestBucket } from './test';
 const loadModel = async () => {
   await tf.setBackend('webgl');
 
@@ -9,6 +9,14 @@ const loadModel = async () => {
     faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
     { maxFaces: 1 }
   );
+};
+
+const DyThreshold = 7;
+
+const thresholdValue = {
+  // NOTE: Values derived based on samples at different focal lengths. Need to verify this on different devices.
+  left: { angle: -1.816, y: 13.5 },
+  right: { angle: -1.873, y: 10.95 },
 };
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
@@ -47,60 +55,12 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
 let model, video;
 const VIDEO_SIZE = 500;
 
-// NOTE: temporary, need to change it with z dimension.
-// NOTE: Observe the initial values then set the threshold
-const DyThreshold = 7;
-
 // TODO: need to move packages as peer deps
 
 let event;
 
-let testBucket = {
-  '-1.5--1': { avg: 0, freq: 0 },
-  '-1--0.5': { avg: 0, freq: 0 },
-  '-0.5-0': { avg: 0, freq: 0 },
-  '0-0.5': { avg: 0, freq: 0 },
-  '0.5-1': { avg: 0, freq: 0 },
-  '1-1.5': { avg: 0, freq: 0 },
-  '1.5-2': { avg: 0, freq: 0 },
-  '2-2.5': { avg: 0, freq: 0 },
-  '2.5-3': { avg: 0, freq: 0 },
-  '3-3.5': { avg: 0, freq: 0 },
-  '3.5-4': { avg: 0, freq: 0 },
-};
-
-function getModifiedBucket(val, dy) {
-  return {
-    avg:
-      (dy + testBucket[val]['freq'] * testBucket[val]['avg']) /
-      (testBucket[val]['freq'] + 1),
-    freq: testBucket[val]['freq'] + 1,
-  };
-}
-function populateTestBucket(dy, irisZ) {
-  if (irisZ > 0 && irisZ <= 0.5) {
-    testBucket['0-0.5'] = getModifiedBucket('0-0.5', dy);
-  } else if (irisZ > 0.5 && irisZ <= 1) {
-    testBucket['0.5-1'] = getModifiedBucket('0.5-1', dy);
-  } else if (irisZ > 1 && irisZ <= 1.5) {
-    testBucket['1-1.5'] = getModifiedBucket('1-1.5', dy);
-  } else if (irisZ > 1.5 && irisZ <= 2) {
-    testBucket['1.5-2'] = getModifiedBucket('1.5-2', dy);
-  } else if (irisZ > 2 && irisZ <= 2.5) {
-    testBucket['2-2.5'] = getModifiedBucket('2-2.5', dy);
-  } else if (irisZ > 2.5 && irisZ <= 3) {
-    testBucket['2.5-3'] = getModifiedBucket('2.5-3', dy);
-  } else if (irisZ > 3 && irisZ <= 3.5) {
-    testBucket['3-3.5'] = getModifiedBucket('3-3.5', dy);
-  } else if (irisZ > 3.5 && irisZ <= 4) {
-    testBucket['3.5-4'] = getModifiedBucket('3.5-4', dy);
-  } else if (irisZ > -0.5 && irisZ <= 0) {
-    testBucket['-0.5-0'] = getModifiedBucket('-0.5-0', dy);
-  } else if (irisZ > -1 && irisZ <= -0.5) {
-    testBucket['-1--0.5'] = getModifiedBucket('-1--0.5', dy);
-  } else if (irisZ > -1.5 && irisZ <= -1) {
-    testBucket['-1.5--1'] = getModifiedBucket('-1.5--1', dy);
-  }
+function getThreshold(dir, irisZ) {
+  return thresholdValue[dir]['angle'] * irisZ + thresholdValue[dir]['y'];
 }
 
 async function renderPrediction() {
@@ -110,6 +70,7 @@ async function renderPrediction() {
     flipHorizontal: true,
     predictIrises: true,
   });
+
   // STEP: Detect a simple blink first
   if (predictions.length > 0) {
     predictions.forEach((prediction) => {
@@ -132,11 +93,22 @@ async function renderPrediction() {
       let rightIrisZ = prediction.annotations.rightEyeIris[0][2];
       let leftIrisZ = prediction.annotations.leftEyeIris[0][2];
 
-      populateTestBucket(leftDy, leftIrisZ);
-      let rightClosed = rightDy < DyThreshold;
-      let leftClosed = leftDy < DyThreshold;
+      let rightClosed = rightDy <= getThreshold('right', rightIrisZ);
+      let leftClosed = leftDy <= getThreshold('left', leftIrisZ);
+      // populateTestBucket('left', leftDy, leftIrisZ);
+      // populateTestBucket('right', rightDy, rightIrisZ);
 
-      console.log(rightIrisZ.toFixed(2), '|', rightDy.toFixed(1));
+      // console.log(
+      //   // leftIrisZ.toFixed(2),
+      //   // '|',
+      //   rightIrisZ.toFixed(2),
+      //   '||',
+      //   // leftDy.toFixed(1)
+      //   // '|',
+      //   rightDy.toFixed(1),
+      //   '|',
+      //   getThreshold('right', rightIrisZ)
+      // );
       event = {
         left: leftClosed,
         right: rightClosed,
@@ -153,7 +125,7 @@ const blink = {
   setUpCamera: setUpCamera,
   getBlinkPrediction: renderPrediction,
   // For testing purpose only
-  testBucket,
+  // testBucket: getTestBucket(),
 };
 
 export default blink;
