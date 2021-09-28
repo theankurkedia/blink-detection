@@ -88274,16 +88274,15 @@ const loadModel = async () => {
   });
 };
 
-const DyThreshold = 7;
 const thresholdValue = {
   // NOTE: Values derived based on samples at different focal lengths. Need to verify this on different devices.
   left: {
-    angle: -1.816,
-    y: 13.5
+    angle: -0.986,
+    y: 12.363
   },
   right: {
-    angle: -1.873,
-    y: 10.95
+    angle: -1.0555,
+    y: 10.3
   }
 };
 
@@ -88349,17 +88348,25 @@ async function renderPrediction() {
       let rightClosed = rightDy <= getThreshold('right', rightIrisZ);
       let leftClosed = leftDy <= getThreshold('left', leftIrisZ); // populateTestBucket('left', leftDy, leftIrisZ);
       // populateTestBucket('right', rightDy, rightIrisZ);
+      // console.log(
+      //   leftIrisZ.toFixed(2),
+      //   '|',
+      //   rightIrisZ.toFixed(2),
+      //   '||',
+      //   leftDy.toFixed(1),
+      //   '|',
+      //   rightDy.toFixed(1),
+      //   '||',
+      //   getThreshold('left', leftIrisZ).toFixed(1),
+      //   '|',
+      //   getThreshold('right', rightIrisZ).toFixed(1)
+      // );
 
-      console.log( // leftIrisZ.toFixed(2),
-      // '|',
-      rightIrisZ.toFixed(2), '||', // leftDy.toFixed(1)
-      // '|',
-      rightDy.toFixed(1), '|', getThreshold('right', rightIrisZ));
       event = {
         left: leftClosed,
-        right: rightClosed // wink: false,
-        // blink: false,
-
+        right: rightClosed,
+        wink: leftClosed || rightClosed,
+        blink: leftClosed && rightClosed
       };
     });
   }
@@ -88370,9 +88377,9 @@ async function renderPrediction() {
 const blink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
-  getBlinkPrediction: renderPrediction // For testing purpose only
-  // testBucket: getTestBucket(),
-
+  getBlinkPrediction: renderPrediction,
+  // For testing purpose only
+  testBucket: (0, _test.getTestBucket)()
 };
 var _default = blink;
 exports.default = _default;
@@ -88398,38 +88405,48 @@ var raf;
 
 const init = async () => {
   await _index.default.loadModel();
-  await _index.default.setUpCamera(videoElement);
-  let stopButton = document.getElementById('stop-button');
-
-  if (stopButton) {
-    stopButton.addEventListener('click', () => {
-      cancelAnimationFrame(raf); // console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
-    });
-  }
+  await _index.default.setUpCamera(videoElement); // let stopButton = document.getElementById('stop-button');
+  // if (stopButton) {
+  //   stopButton.addEventListener('click', () => {
+  //     cancelAnimationFrame(raf);
+  //     console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
+  //   });
+  // }
 
   let leftEye = document.getElementById('left-eye');
   let rightEye = document.getElementById('right-eye');
+  let blinkIndicator = document.getElementById('blink-indicator');
+  let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
     let result = await _index.default.getBlinkPrediction();
     updateModelStatus();
 
     if (result) {
-      if (result.left) {
-        leftEye.style.color = 'red';
+      if (result.blink) {
+        blinkIndicator.style.color = 'red';
       } else {
-        leftEye.style.color = 'green';
-      }
-
-      if (result.right) {
-        rightEye.style.color = 'red';
-      } else {
-        rightEye.style.color = 'green';
-      }
-    } // setTimeout(() => {
+        blinkIndicator.style.color = 'green';
+      } // if (result.wink) {
+      //   winkIndicator.style.color = 'red';
+      // } else {
+      //   winkIndicator.style.color = 'green';
+      // }
 
 
-    raf = requestAnimationFrame(predict); // }, 400);
+      console.log('*** 🔥 rs', result.left, result.right); // if (result.left) {
+      //   leftEye.style.color = 'red';
+      // } else {
+      //   leftEye.style.color = 'green';
+      // }
+      // if (result.right) {
+      //   rightEye.style.color = 'red';
+      // } else {
+      //   rightEye.style.color = 'green';
+      // }
+    }
+
+    raf = requestAnimationFrame(predict);
   };
 
   predict();

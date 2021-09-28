@@ -11,12 +11,10 @@ const loadModel = async () => {
   );
 };
 
-const DyThreshold = 7;
-
 const thresholdValue = {
   // NOTE: Values derived based on samples at different focal lengths. Need to verify this on different devices.
-  left: { angle: -1.816, y: 13.5 },
-  right: { angle: -1.873, y: 10.95 },
+  left: { angle: -0.986, y: 12.363 },
+  right: { angle: -1.0555, y: 10.3 },
 };
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
@@ -99,21 +97,23 @@ async function renderPrediction() {
       // populateTestBucket('right', rightDy, rightIrisZ);
 
       // console.log(
-      //   // leftIrisZ.toFixed(2),
-      //   // '|',
+      //   leftIrisZ.toFixed(2),
+      //   '|',
       //   rightIrisZ.toFixed(2),
       //   '||',
-      //   // leftDy.toFixed(1)
-      //   // '|',
-      //   rightDy.toFixed(1),
+      //   leftDy.toFixed(1),
       //   '|',
-      //   getThreshold('right', rightIrisZ)
+      //   rightDy.toFixed(1),
+      //   '||',
+      //   getThreshold('left', leftIrisZ).toFixed(1),
+      //   '|',
+      //   getThreshold('right', rightIrisZ).toFixed(1)
       // );
       event = {
         left: leftClosed,
         right: rightClosed,
-        // wink: false,
-        // blink: false,
+        wink: leftClosed || rightClosed,
+        blink: leftClosed && rightClosed,
       };
     });
   }
