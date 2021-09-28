@@ -4,4 +4,4 @@ demo/
 dist/demo.*
 dist/styles.*
 dist/index.html
-test.js
+test-utils.js
