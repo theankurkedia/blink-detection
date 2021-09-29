@@ -45,7 +45,7 @@ const init = async () => {
       // } else {
       //   winkIndicator.style.color = 'green';
       // }
-      console.log('*** 🔥 rs', result.left, result.right);
+      // console.log('*** 🔥 rs', result.left, result.right);
       // if (result.left) {
       //   leftEye.style.color = 'red';
       // } else {

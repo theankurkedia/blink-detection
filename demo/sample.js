@@ -1,95 +1,116 @@
-let closedRight = {
-  "-1.5--1": {
-    "avg": 12.139,
-    "freq": 89
-  },
-  "-1--0.5": {
-    "avg": 11.532,
-    "freq": 99
-  },
-  "-0.5-0": {
-    "avg": 10.92,
-    "freq": 123
-  },
-  "0-0.5": {
-    "avg": 10.579,
-    "freq": 146
-  },
-  "0.5-1": {
-    "avg": 10.338,
-    "freq": 177
-  },
-  "1-1.5": {
-    "avg": 9.659,
-    "freq": 188
-  },
-  "1.5-2": {
-    "avg": 9.227,
-    "freq": 166
-  },
-  "2-2.5": {
-    "avg": 8.461,
-    "freq": 165
-  },
-  "2.5-3": {
-    "avg": 7.576,
-    "freq": 95
-  },
-  "3-3.5": {
-    "avg": 7.247,
-    "freq": 65
-  },
-  "3.5-4": {
-    "avg": 6.613,
-    "freq": 46
-  };
+// populateTestBucket('left', leftDy, leftIrisZ);
+// populateTestBucket('right', rightDy, rightIrisZ);
 
-let closedLeft = {
-  "-1.5--1": {
-    "avg": 13.655,
-    "freq": 40
-  },
-  "-1--0.5": {
-    "avg": 12.55,
-    "freq": 79
-  },
-  "-0.5-0": {
-    "avg": 12.363,
-    "freq": 110
-  },
-  "0-0.5": {
-    "avg": 11.526,
-    "freq": 168
-  },
-  "0.5-1": {
-    "avg": 11.079,
-    "freq": 222
-  },
-  "1-1.5": {
-    "avg": 10.321,
-    "freq": 216
-  },
-  "1.5-2": {
-    "avg": 10.01,
-    "freq": 183
-  },
-  "2-2.5": {
-    "avg": 9.404,
-    "freq": 140
-  },
-  "2.5-3": {
-    "avg": 9.059,
-    "freq": 139
-  },
-  "3-3.5": {
-    "avg": 9.024,
-    "freq": 81
-  },
-  "3.5-4": {
-    "avg": 8.611,
-    "freq": 74
-  }
-};
+// let rightLowerEyePointA = prediction.annotations.rightEyeUpper0[2];
+// let rightLowerEyePointC = prediction.annotations.rightEyeUpper0[4];
+// let rightUpperEyePointA = prediction.annotations.rightEyeLower0[3];
+// let rightUpperEyePointC = prediction.annotations.rightEyeLower0[5];
+// console.log(
+//   leftIrisZ.toFixed(2),
+//   '|',
+//   rightIrisZ.toFixed(2),
+//   '||',
+//   leftDy.toFixed(1),
+//   '|',
+//   rightDy.toFixed(1),
+//   '||',
+//   getThreshold('left', leftIrisZ).toFixed(1),
+//   '|',
+//   getThreshold('right', rightIrisZ).toFixed(1)
+// );
+let closedRight;
+// let closedRight = {
+//   "-1.5--1": {
+//     "avg": 12.139,
+//     "freq": 89
+//   },
+//   "-1--0.5": {
+//     "avg": 11.532,
+//     "freq": 99
+//   },
+//   "-0.5-0": {
+//     "avg": 10.92,
+//     "freq": 123
+//   },
+//   "0-0.5": {
+//     "avg": 10.579,
+//     "freq": 146
+//   },
+//   "0.5-1": {
+//     "avg": 10.338,
+//     "freq": 177
+//   },
+//   "1-1.5": {
+//     "avg": 9.659,
+//     "freq": 188
+//   },
+//   "1.5-2": {
+//     "avg": 9.227,
+//     "freq": 166
+//   },
+//   "2-2.5": {
+//     "avg": 8.461,
+//     "freq": 165
+//   },
+//   "2.5-3": {
+//     "avg": 7.576,
+//     "freq": 95
+//   },
+//   "3-3.5": {
+//     "avg": 7.247,
+//     "freq": 65
+//   },
+//   "3.5-4": {
+//     "avg": 6.613,
+//     "freq": 46
+//   };
+
+// let closedLeft = {
+//   "-1.5--1": {
+//     "avg": 13.655,
+//     "freq": 40
+//   },
+//   "-1--0.5": {
+//     "avg": 12.55,
+//     "freq": 79
+//   },
+//   "-0.5-0": {
+//     "avg": 12.363,
+//     "freq": 110
+//   },
+//   "0-0.5": {
+//     "avg": 11.526,
+//     "freq": 168
+//   },
+//   "0.5-1": {
+//     "avg": 11.079,
+//     "freq": 222
+//   },
+//   "1-1.5": {
+//     "avg": 10.321,
+//     "freq": 216
+//   },
+//   "1.5-2": {
+//     "avg": 10.01,
+//     "freq": 183
+//   },
+//   "2-2.5": {
+//     "avg": 9.404,
+//     "freq": 140
+//   },
+//   "2.5-3": {
+//     "avg": 9.059,
+//     "freq": 139
+//   },
+//   "3-3.5": {
+//     "avg": 9.024,
+//     "freq": 81
+//   },
+//   "3.5-4": {
+//     "avg": 8.611,
+//     "freq": 74
+//   }
+// };
 
 // let openLeft = {
 //   '-1.5--1': {

@@ -1,7 +1,7 @@
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 import * as tf from '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
-// import { populateTestBucket, getTestBucket } from './test';
+
 const loadModel = async () => {
   await tf.setBackend('webgl');
 
@@ -53,8 +53,6 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
 let model, video;
 const VIDEO_SIZE = 500;
 
-// TODO: need to move packages as peer deps
-
 let event;
 
 function getThreshold(dir, irisZ) {
@@ -80,10 +78,6 @@ async function renderPrediction() {
 
       let leftLowerEyePoint = prediction.annotations.leftEyeUpper0[3];
       let leftUpperEyePoint = prediction.annotations.leftEyeLower0[4];
-      // let rightLowerEyePointA = prediction.annotations.rightEyeUpper0[2];
-      // let rightLowerEyePointC = prediction.annotations.rightEyeUpper0[4];
-      // let rightUpperEyePointA = prediction.annotations.rightEyeLower0[3];
-      // let rightUpperEyePointC = prediction.annotations.rightEyeLower0[5];
 
       let rightDy = rightUpperEyePoint[1] - rightLowerEyePoint[1];
       let leftDy = leftUpperEyePoint[1] - leftLowerEyePoint[1];
@@ -93,22 +87,7 @@ async function renderPrediction() {
 
       let rightClosed = rightDy <= getThreshold('right', rightIrisZ);
       let leftClosed = leftDy <= getThreshold('left', leftIrisZ);
-      // populateTestBucket('left', leftDy, leftIrisZ);
-      // populateTestBucket('right', rightDy, rightIrisZ);
 
-      // console.log(
-      //   leftIrisZ.toFixed(2),
-      //   '|',
-      //   rightIrisZ.toFixed(2),
-      //   '||',
-      //   leftDy.toFixed(1),
-      //   '|',
-      //   rightDy.toFixed(1),
-      //   '||',
-      //   getThreshold('left', leftIrisZ).toFixed(1),
-      //   '|',
-      //   getThreshold('right', rightIrisZ).toFixed(1)
-      // );
       event = {
         left: leftClosed,
         right: rightClosed,

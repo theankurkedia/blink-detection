@@ -7,12 +7,7 @@
   "engines": {
     "node": ">=8.9.0"
   },
-  "dependencies": {
-    "@tensorflow-models/face-landmarks-detection": "0.0.1",
-    "@tensorflow/tfjs-backend-webgl": "2.8.4",
-    "@tensorflow/tfjs-converter": "2.8.4",
-    "@tensorflow/tfjs-core": "2.8.4"
-  },
+  "dependencies": {},
   "scripts": {
     "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --target browser",
     "watch:demo": "cross-env NODE_ENV=development parcel demo/index.html --no-hmr --target browser",
@@ -23,17 +18,20 @@
     "crypto": false
   },
   "keywords": [
+    "javascript",
     "tfjs",
     "machine learning",
     "tensorflow.js",
-    "creative coding",
-    "tensorflow",
-    "javascript"
+    "tensorflow"
   ],
   "devDependencies": {
     "@babel/core": "7.12.0",
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/preset-env": "^7.7.6",
+    "@tensorflow-models/face-landmarks-detection": "^0.0.3",
+    "@tensorflow/tfjs-backend-webgl": "^3.9.0",
+    "@tensorflow/tfjs-converter": "^3.9.0",
+    "@tensorflow/tfjs-core": "^3.9.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.7.0",
     "clang-format": "~1.2.2",
@@ -56,11 +54,18 @@
   },
   "type": "module",
   "eslintIgnore": [
-    "dist/"
+    "dist/",
+    "node_modules/"
   ],
   "bugs": {
     "url": "https://github.com/theankurkedia/blink-detection/issues"
   },
   "homepage": "https://github.com/theankurkedia/blink-detection#readme",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "@tensorflow-models/face-landmarks-detection": "^0.0.3",
+    "@tensorflow/tfjs-backend-webgl": "^3.9.0",
+    "@tensorflow/tfjs-converter": "^3.9.0",
+    "@tensorflow/tfjs-core": "^3.9.0"
+  }
 }
