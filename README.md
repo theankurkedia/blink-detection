@@ -14,8 +14,6 @@ Uses Tensorflow.js's [face landmark detection model](https://www.npmjs.com/packa
 
 This tool detects when the user blinks. It can also detect a wink and separate eye blinks as well.
 
-## How to use
-
 ## Installation
 
 Via npm:
@@ -28,6 +26,8 @@ Using `yarn`:
 
     $ yarn add @tensorflow/tfjs-core@2.4.0, @tensorflow/tfjs-converter@2.4.0
     $ yarn add @tensorflow/tfjs-backend-webgl@2.4.0 # or @tensorflow/tfjs-backend-wasm@2.4.0
+
+## How to use
 
 ### Code sample
 
