@@ -18,7 +18,7 @@ This tool detects when the user blinks. It can also detect a wink and separate e
 
 ## Installation
 
-Via script tags:
+<!-- Via script tags:
 
 ```html
 <!-- Require the peer dependencies of face-landmarks-detection. -->
@@ -33,8 +33,9 @@ Via script tags:
 <script src="https://unpkg.com/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.js"></script>
 
 <!-- Require blink-detection package itselg -->
-<script src="https://unpkg.com/blink-detection@1.0.3/dist/index.js"></script>
-```
+<script src="https://unpkg.com/blink-detection@1.1.0/dist/index.js"></script>
+
+````-->
 
 Via npm:
 
@@ -53,7 +54,7 @@ Start by importing it:
 
 ```js
 import blink from 'blink-detection';
-```
+````
 
 Load the machine learning model:
 
