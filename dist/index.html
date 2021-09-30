@@ -1,0 +1,68 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detect the user's blink and wink using machine learning. Built with Tensorflow.js">
+    <meta property="og:description" content="Detect the user's blink and wink using machine learning. Built with Tensorflow.js">
+    <meta property="twitter:description" content="Detect the user's blink and wink using machine learning. Built with Tensorflow.js">
+    <meta property="og:image" content="https://res.cloudinary.com/devdevcharlie/image/upload/v1612225468/Screenshot_2021-02-02_at_01.18.18_dcpjpo.png">
+    <meta property="og:url" content="https://blink-detection.vercel.app/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <title>Blink Detection</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.8986bff4.css">
+  </head>
+  <body>
+    <h1>Blink Detection</h1>
+    <section class="info">
+      <p class="credit">
+        Built by
+        <a href="https://ankurkedia.com" target="_blank" rel="noopener noreferrer">Ankur Kedia</a>
+        -
+        <a href="https://twitter.com/theankurkedia" target="_blank" rel="noopener noreferrer">@theankurkedia</a>
+      </p>
+      <p class="instruction">Just blink</p>
+      <p class="model-status">Machine learning model loading...</p>
+    </section>
+
+    <main>
+      <div id="main">
+        <video id="video" playsinline="" style="
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            visibility: hidden;
+            width: auto;
+            height: auto;
+            display: none;
+          "></video>
+        <div style="
+            display: flex;
+            justify-content: space-evenly;
+            font-size: 1.5rem;
+          ">
+          <div style="color: yellow" id="blink-indicator">Blinked</div>
+          <!-- <div style="color: yellow" id="wink-indicator">Winked</div> -->
+        </div>
+        <!-- <div
+          style="
+            display: flex;
+            justify-content: space-evenly;
+            font-size: 1.5rem;
+          "
+        >
+          <div style="color: yellow" id="left-eye">Left</div>
+          <div style="color: yellow" id="right-eye">Right</div>
+        </div> -->
+        <!-- <button
+          id="stop-button"
+          style="position: absolute; right: 10px; bottom: 10px"
+        >
+          Stop
+        </button> -->
+      </div>
+    </main>
+    <script src="/demo.e31bb0bc.js"></script>
+  </body>
+</html>
