@@ -98,7 +98,7 @@ async function renderPrediction() {
       let upperLeft = prediction.annotations.leftEyeLower0;
       const leftEAR = getEAR(upperLeft, lowerLeft);
 
-      // console.log('*** 🔥 Ear', leftEAR.toFixed(3), rightEAR.toFixed(3));
+      console.log('*** 🔥 Ear', leftEAR.toFixed(2), rightEAR.toFixed(2));
       // if (leftEAR <= earThreshold || rightEAR <= earThreshold) {
       //   console.log('*****************');
       // }
