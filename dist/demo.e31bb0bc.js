@@ -84338,7 +84338,7 @@ const loadModel = async () => {
   });
 };
 
-const earThreshold = 0.23;
+const earThreshold = 0.24;
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
   video = videoElement;
@@ -84386,7 +84386,7 @@ async function renderPrediction() {
     input: video,
     returnTensors: false,
     flipHorizontal: false,
-    predictIrises: false
+    predictIrises: true
   });
 
   if (predictions.length > 0) {
@@ -84402,12 +84402,9 @@ async function renderPrediction() {
       const rightEAR = getEAR(upperRight, lowerRight);
       let lowerLeft = prediction.annotations.leftEyeUpper0;
       let upperLeft = prediction.annotations.leftEyeLower0;
-      const leftEAR = getEAR(upperLeft, lowerLeft);
-      console.log('*** 🔥 Ear', leftEAR.toFixed(3), rightEAR.toFixed(3));
-
-      if (leftEAR <= earThreshold || rightEAR <= earThreshold) {
-        console.log('*****************');
-      }
+      const leftEAR = getEAR(upperLeft, lowerLeft); // if (leftEAR <= earThreshold || rightEAR <= earThreshold) {
+      //   console.log('*** 🔥 Ear', leftEAR.toFixed(3), rightEAR.toFixed(3));
+      // }
 
       event = {
         left: leftEAR <= earThreshold,
