@@ -11,7 +11,7 @@ const loadModel = async () => {
   );
 };
 
-const earThreshold = 0.24;
+const earThreshold = 0.25;
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
   video = videoElement;
