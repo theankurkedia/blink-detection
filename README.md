@@ -73,9 +73,9 @@ const predict = async () => {
   // expect blinkPrediction to be {
   //  blink: boolean,
   //  wink: boolean,
-  //  longBlink: boolean
+  //  longBlink: boolean,
   //  left: boolean,
-  //  right: boolean,
+  //  right: boolean
   // }
   if (blinkPrediction.blink) {
     // do something when the user blinks
