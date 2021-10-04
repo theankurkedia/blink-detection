@@ -50,11 +50,21 @@ let model, video;
 const VIDEO_SIZE = 500;
 
 let event;
+let blinked = false;
 
-function getThreshold(dir, irisZ) {
-  return thresholdValue[dir]['angle'] * irisZ + thresholdValue[dir]['y'];
+function getIsLongBlink(blinkDetected) {
+  // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
+  if (blinkDetected) {
+    if (blinked) {
+      return true;
+    }
+    blinked = true;
+  } else {
+    blinked = false;
+  }
+
+  return false;
 }
-
 function getEucledianDistance(x1, y1, x2, y2) {
   return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
@@ -98,14 +108,14 @@ async function renderPrediction() {
       let upperLeft = prediction.annotations.leftEyeLower0;
       const leftEAR = getEAR(upperLeft, lowerLeft);
 
-      // if (leftEAR <= earThreshold || rightEAR <= earThreshold) {
-      //   console.log('*** 🔥 Ear', leftEAR.toFixed(3), rightEAR.toFixed(3));
-      // }
       event = {
         left: leftEAR <= earThreshold,
         right: rightEAR <= earThreshold,
         wink: leftEAR <= earThreshold || rightEAR <= earThreshold,
         blink: leftEAR <= earThreshold && rightEAR <= earThreshold,
+        longBlink: getIsLongBlink(
+          leftEAR <= earThreshold && rightEAR <= earThreshold
+        ),
       };
     });
   }
@@ -116,8 +126,6 @@ const blink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
   getBlinkPrediction: renderPrediction,
-  // For testing purpose only
-  // testBucket: getTestBucket(),
 };
 
 export default blink;
