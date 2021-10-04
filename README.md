@@ -69,8 +69,14 @@ Run the predictions:
 ```js
 const predict = async () => {
   const blinkPrediction = await blink.getBlinkPrediction();
-  console.log('Blink: ', blinkPrediction); // will return an object with values blink, wink, left, right indicating the state
-
+  console.log('Blink: ', blinkPrediction); // will return an object indicating the booleans for different states
+  // expect blinkPrediction to be {
+  //  blink: boolean,
+  //  wink: boolean,
+  //  longBlink: boolean
+  //  left: boolean,
+  //  right: boolean,
+  // }
   if (blinkPrediction.blink) {
     // do something when the user blinks
   }
