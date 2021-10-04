@@ -24,10 +24,11 @@ const init = async () => {
   //   });
   // }
 
-  let leftEye = document.getElementById('left-eye');
-  let rightEye = document.getElementById('right-eye');
+  // let leftEye = document.getElementById('left-eye');
+  // let rightEye = document.getElementById('right-eye');
   let blinkIndicator = document.getElementById('blink-indicator');
-  let winkIndicator = document.getElementById('wink-indicator');
+  let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  // let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
     let result = await blink.getBlinkPrediction();
@@ -39,6 +40,11 @@ const init = async () => {
       } else {
         blinkIndicator.style.color = 'green';
       }
+      // if (result.longBlink) {
+      //   longBlinkIndicator.style.color = 'red';
+      // } else {
+      //   longBlinkIndicator.style.color = 'green';
+      // }
 
       // if (result.wink) {
       //   winkIndicator.style.color = 'red';

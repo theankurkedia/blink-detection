@@ -84368,9 +84368,21 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
 let model, video;
 const VIDEO_SIZE = 500;
 let event;
+let blinked = false;
 
-function getThreshold(dir, irisZ) {
-  return thresholdValue[dir]['angle'] * irisZ + thresholdValue[dir]['y'];
+function getIsLongBlink(blinkDetected) {
+  // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
+  if (blinkDetected) {
+    if (blinked) {
+      return true;
+    }
+
+    blinked = true;
+  } else {
+    blinked = false;
+  }
+
+  return false;
 }
 
 function getEucledianDistance(x1, y1, x2, y2) {
@@ -84402,15 +84414,13 @@ async function renderPrediction() {
       const rightEAR = getEAR(upperRight, lowerRight);
       let lowerLeft = prediction.annotations.leftEyeUpper0;
       let upperLeft = prediction.annotations.leftEyeLower0;
-      const leftEAR = getEAR(upperLeft, lowerLeft); // if (leftEAR <= earThreshold || rightEAR <= earThreshold) {
-      //   console.log('*** 🔥 Ear', leftEAR.toFixed(3), rightEAR.toFixed(3));
-      // }
-
+      const leftEAR = getEAR(upperLeft, lowerLeft);
       event = {
         left: leftEAR <= earThreshold,
         right: rightEAR <= earThreshold,
         wink: leftEAR <= earThreshold || rightEAR <= earThreshold,
-        blink: leftEAR <= earThreshold && rightEAR <= earThreshold
+        blink: leftEAR <= earThreshold && rightEAR <= earThreshold,
+        longBlink: getIsLongBlink(leftEAR <= earThreshold && rightEAR <= earThreshold)
       };
     });
   }
@@ -84421,9 +84431,7 @@ async function renderPrediction() {
 const blink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
-  getBlinkPrediction: renderPrediction // For testing purpose only
-  // testBucket: getTestBucket(),
-
+  getBlinkPrediction: renderPrediction
 };
 var _default = blink;
 exports.default = _default;
@@ -84456,11 +84464,11 @@ const init = async () => {
   //     console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
   //   });
   // }
+  // let leftEye = document.getElementById('left-eye');
+  // let rightEye = document.getElementById('right-eye');
 
-  let leftEye = document.getElementById('left-eye');
-  let rightEye = document.getElementById('right-eye');
   let blinkIndicator = document.getElementById('blink-indicator');
-  let winkIndicator = document.getElementById('wink-indicator');
+  let longBlinkIndicator = document.getElementById('long-blink-indicator'); // let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
     let result = await _index.default.getBlinkPrediction();
@@ -84471,7 +84479,12 @@ const init = async () => {
         blinkIndicator.style.color = 'red';
       } else {
         blinkIndicator.style.color = 'green';
-      } // if (result.wink) {
+      } // if (result.longBlink) {
+      //   longBlinkIndicator.style.color = 'red';
+      // } else {
+      //   longBlinkIndicator.style.color = 'green';
+      // }
+      // if (result.wink) {
       //   winkIndicator.style.color = 'red';
       // } else {
       //   winkIndicator.style.color = 'green';
