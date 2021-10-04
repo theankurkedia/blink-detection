@@ -84338,7 +84338,7 @@ const loadModel = async () => {
   });
 };
 
-const earThreshold = 0.24;
+const earThreshold = 0.27;
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
   video = videoElement;
@@ -84370,8 +84370,9 @@ const VIDEO_SIZE = 500;
 let event;
 let blinked = false;
 
-function getIsLongBlink(blinkDetected) {
+function getIsVoluntaryBlink(blinkDetected) {
   // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
+  // NOTE: adding this to separate intentional blinks
   if (blinkDetected) {
     if (blinked) {
       return true;
@@ -84420,7 +84421,7 @@ async function renderPrediction() {
         right: rightEAR <= earThreshold,
         wink: leftEAR <= earThreshold || rightEAR <= earThreshold,
         blink: leftEAR <= earThreshold && rightEAR <= earThreshold,
-        longBlink: getIsLongBlink(leftEAR <= earThreshold && rightEAR <= earThreshold)
+        longBlink: getIsVoluntaryBlink(leftEAR <= earThreshold && rightEAR <= earThreshold)
       };
     });
   }
