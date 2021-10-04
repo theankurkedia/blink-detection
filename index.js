@@ -54,6 +54,7 @@ let blinked = false;
 
 function getIsLongBlink(blinkDetected) {
   // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
+  // NOTE: adding this to separate intentional blinks
   if (blinkDetected) {
     if (blinked) {
       return true;
