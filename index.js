@@ -2,6 +2,21 @@ import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detec
 import * as tf from '@tensorflow/tfjs-core';
 import '@tensorflow/tfjs-backend-webgl';
 
+let model, video, event, blinkRate;
+const VIDEO_SIZE = 500;
+let blinked = false;
+let tempBlinkRate = 0;
+let rendering = true;
+let rateInterval;
+const EAR_THRESHOLD = 0.27;
+
+function initBlinkRateCalculator() {
+  rateInterval = setInterval(() => {
+    blinkRate = tempBlinkRate * 6;
+    tempBlinkRate = 0;
+  }, 10000);
+}
+
 const loadModel = async () => {
   await tf.setBackend('webgl');
 
@@ -10,8 +25,6 @@ const loadModel = async () => {
     { maxFaces: 1 }
   );
 };
-
-const earThreshold = 0.27;
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
   video = videoElement;
@@ -42,30 +55,19 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
   return new Promise((resolve) => {
     video.onloadedmetadata = () => {
       resolve(video);
+      initBlinkRateCalculator();
     };
   });
 };
 
-let model, video;
-const VIDEO_SIZE = 500;
-
-let event;
-let blinked = false;
-
-function getIsVoluntaryBlink(blinkDetected) {
-  // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
-  // NOTE: adding this to separate intentional blinks
-  if (blinkDetected) {
-    if (blinked) {
-      return true;
-    }
-    blinked = true;
-  } else {
-    blinked = false;
-  }
-
-  return false;
+function stopPrediction() {
+  rendering = false;
+  clearInterval(rateInterval);
 }
+function updateBlinkRate() {
+  tempBlinkRate++;
+}
+
 function getEucledianDistance(x1, y1, x2, y2) {
   return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
@@ -84,41 +86,61 @@ function getEAR(upper, lower) {
   );
 }
 
+function getIsVoluntaryBlink(blinkDetected) {
+  // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
+  // NOTE: adding this to separate intentional blinks
+  if (blinkDetected) {
+    if (blinked) {
+      return true;
+    }
+    blinked = true;
+  } else {
+    blinked = false;
+  }
+
+  return false;
+}
+
 async function renderPrediction() {
-  const predictions = await model.estimateFaces({
-    input: video,
-    returnTensors: false,
-    flipHorizontal: false,
-    predictIrises: true,
-  });
-
-  if (predictions.length > 0) {
-    predictions.forEach((prediction) => {
-      // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
-      // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
-      // NOTE: taking center point for now, can add more points for accuracy(mabye)
-
-      // Other logic
-      // NOTE: Found another way to detect it by Eye Aspect Ratio https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/
-      // NOTE: Found it to be more accurate and gives better prection in cases where earlier method did not work.
-      let lowerRight = prediction.annotations.rightEyeUpper0;
-      let upperRight = prediction.annotations.rightEyeLower0;
-      const rightEAR = getEAR(upperRight, lowerRight);
-
-      let lowerLeft = prediction.annotations.leftEyeUpper0;
-      let upperLeft = prediction.annotations.leftEyeLower0;
-      const leftEAR = getEAR(upperLeft, lowerLeft);
-
-      event = {
-        left: leftEAR <= earThreshold,
-        right: rightEAR <= earThreshold,
-        wink: leftEAR <= earThreshold || rightEAR <= earThreshold,
-        blink: leftEAR <= earThreshold && rightEAR <= earThreshold,
-        longBlink: getIsVoluntaryBlink(
-          leftEAR <= earThreshold && rightEAR <= earThreshold
-        ),
-      };
+  if (rendering) {
+    const predictions = await model.estimateFaces({
+      input: video,
+      returnTensors: false,
+      flipHorizontal: false,
+      predictIrises: true,
     });
+
+    if (predictions.length > 0) {
+      predictions.forEach((prediction) => {
+        // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
+        // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
+        // NOTE: taking center point for now, can add more points for accuracy(mabye)
+
+        // Other logic
+        // NOTE: Found another way to detect it by Eye Aspect Ratio https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/
+        // NOTE: Found it to be more accurate and gives better prection in cases where earlier method did not work.
+        let lowerRight = prediction.annotations.rightEyeUpper0;
+        let upperRight = prediction.annotations.rightEyeLower0;
+        const rightEAR = getEAR(upperRight, lowerRight);
+
+        let lowerLeft = prediction.annotations.leftEyeUpper0;
+        let upperLeft = prediction.annotations.leftEyeLower0;
+        const leftEAR = getEAR(upperLeft, lowerLeft);
+
+        let blinked = leftEAR <= EAR_THRESHOLD && rightEAR <= EAR_THRESHOLD;
+        if (blinked) {
+          updateBlinkRate();
+        }
+        event = {
+          left: leftEAR <= EAR_THRESHOLD,
+          right: rightEAR <= EAR_THRESHOLD,
+          wink: leftEAR <= EAR_THRESHOLD || rightEAR <= EAR_THRESHOLD,
+          blink: blinked,
+          longBlink: getIsVoluntaryBlink(blinked),
+          rate: blinkRate,
+        };
+      });
+    }
   }
   return event;
 }
@@ -126,6 +148,7 @@ async function renderPrediction() {
 const blink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
+  stopPrediction: stopPrediction,
   getBlinkPrediction: renderPrediction,
 };
 

@@ -84331,14 +84331,27 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+let model, video, event, blinkRate;
+const VIDEO_SIZE = 500;
+let blinked = false;
+let tempBlinkRate = 0;
+let rendering = true;
+let rateInterval;
+const EAR_THRESHOLD = 0.27;
+
+function initBlinkRateCalculator() {
+  rateInterval = setInterval(() => {
+    blinkRate = tempBlinkRate * 6;
+    tempBlinkRate = 0;
+  }, 10000);
+}
+
 const loadModel = async () => {
   await tf.setBackend('webgl');
   model = await faceLandmarksDetection.load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh, {
     maxFaces: 1
   });
 };
-
-const earThreshold = 0.27;
 
 const setUpCamera = async (videoElement, webcamId = undefined) => {
   video = videoElement;
@@ -84361,14 +84374,27 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
   return new Promise(resolve => {
     video.onloadedmetadata = () => {
       resolve(video);
+      initBlinkRateCalculator();
     };
   });
 };
 
-let model, video;
-const VIDEO_SIZE = 500;
-let event;
-let blinked = false;
+function stopPrediction() {
+  rendering = false;
+  clearInterval(rateInterval);
+}
+
+function updateBlinkRate() {
+  tempBlinkRate++;
+}
+
+function getEucledianDistance(x1, y1, x2, y2) {
+  return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+}
+
+function getEAR(upper, lower) {
+  return (getEucledianDistance(upper[5][0], upper[5][1], lower[4][0], lower[4][1]) + getEucledianDistance(upper[3][0], upper[3][1], lower[2][0], lower[2][1])) / (2 * getEucledianDistance(upper[0][0], upper[0][1], upper[8][0], upper[8][1]));
+}
 
 function getIsVoluntaryBlink(blinkDetected) {
   // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
@@ -84386,44 +84412,45 @@ function getIsVoluntaryBlink(blinkDetected) {
   return false;
 }
 
-function getEucledianDistance(x1, y1, x2, y2) {
-  return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-}
-
-function getEAR(upper, lower) {
-  return (getEucledianDistance(upper[5][0], upper[5][1], lower[4][0], lower[4][1]) + getEucledianDistance(upper[3][0], upper[3][1], lower[2][0], lower[2][1])) / (2 * getEucledianDistance(upper[0][0], upper[0][1], upper[8][0], upper[8][1]));
-}
-
 async function renderPrediction() {
-  const predictions = await model.estimateFaces({
-    input: video,
-    returnTensors: false,
-    flipHorizontal: false,
-    predictIrises: true
-  });
-
-  if (predictions.length > 0) {
-    predictions.forEach(prediction => {
-      // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
-      // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
-      // NOTE: taking center point for now, can add more points for accuracy(mabye)
-      // Other logic
-      // NOTE: Found another way to detect it by Eye Aspect Ratio https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/
-      // NOTE: Found it to be more accurate and gives better prection in cases where earlier method did not work.
-      let lowerRight = prediction.annotations.rightEyeUpper0;
-      let upperRight = prediction.annotations.rightEyeLower0;
-      const rightEAR = getEAR(upperRight, lowerRight);
-      let lowerLeft = prediction.annotations.leftEyeUpper0;
-      let upperLeft = prediction.annotations.leftEyeLower0;
-      const leftEAR = getEAR(upperLeft, lowerLeft);
-      event = {
-        left: leftEAR <= earThreshold,
-        right: rightEAR <= earThreshold,
-        wink: leftEAR <= earThreshold || rightEAR <= earThreshold,
-        blink: leftEAR <= earThreshold && rightEAR <= earThreshold,
-        longBlink: getIsVoluntaryBlink(leftEAR <= earThreshold && rightEAR <= earThreshold)
-      };
+  if (rendering) {
+    const predictions = await model.estimateFaces({
+      input: video,
+      returnTensors: false,
+      flipHorizontal: false,
+      predictIrises: true
     });
+
+    if (predictions.length > 0) {
+      predictions.forEach(prediction => {
+        // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
+        // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
+        // NOTE: taking center point for now, can add more points for accuracy(mabye)
+        // Other logic
+        // NOTE: Found another way to detect it by Eye Aspect Ratio https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/
+        // NOTE: Found it to be more accurate and gives better prection in cases where earlier method did not work.
+        let lowerRight = prediction.annotations.rightEyeUpper0;
+        let upperRight = prediction.annotations.rightEyeLower0;
+        const rightEAR = getEAR(upperRight, lowerRight);
+        let lowerLeft = prediction.annotations.leftEyeUpper0;
+        let upperLeft = prediction.annotations.leftEyeLower0;
+        const leftEAR = getEAR(upperLeft, lowerLeft);
+        let blinked = leftEAR <= EAR_THRESHOLD && rightEAR <= EAR_THRESHOLD;
+
+        if (blinked) {
+          updateBlinkRate();
+        }
+
+        event = {
+          left: leftEAR <= EAR_THRESHOLD,
+          right: rightEAR <= EAR_THRESHOLD,
+          wink: leftEAR <= EAR_THRESHOLD || rightEAR <= EAR_THRESHOLD,
+          blink: blinked,
+          longBlink: getIsVoluntaryBlink(blinked),
+          rate: blinkRate
+        };
+      });
+    }
   }
 
   return event;
@@ -84432,6 +84459,7 @@ async function renderPrediction() {
 const blink = {
   loadModel: loadModel,
   setUpCamera: setUpCamera,
+  stopPrediction: stopPrediction,
   getBlinkPrediction: renderPrediction
 };
 var _default = blink;
@@ -84468,8 +84496,9 @@ const init = async () => {
   // let leftEye = document.getElementById('left-eye');
   // let rightEye = document.getElementById('right-eye');
 
-  let blinkIndicator = document.getElementById('blink-indicator');
-  let longBlinkIndicator = document.getElementById('long-blink-indicator'); // let winkIndicator = document.getElementById('wink-indicator');
+  let blinkIndicator = document.getElementById('blink-indicator'); // let longBlinkIndicator = document.getElementById('long-blink-indicator');
+
+  let rateIndicator = document.getElementById('blink-rate'); // let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
     let result = await _index.default.getBlinkPrediction();
@@ -84480,6 +84509,10 @@ const init = async () => {
         blinkIndicator.style.color = 'red';
       } else {
         blinkIndicator.style.color = 'green';
+      }
+
+      if (result.rate !== undefined) {
+        rateIndicator.textContent = result.rate;
       } // if (result.longBlink) {
       //   longBlinkIndicator.style.color = 'red';
       // } else {

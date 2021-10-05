@@ -27,7 +27,8 @@ const init = async () => {
   // let leftEye = document.getElementById('left-eye');
   // let rightEye = document.getElementById('right-eye');
   let blinkIndicator = document.getElementById('blink-indicator');
-  let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  // let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  let rateIndicator = document.getElementById('blink-rate');
   // let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
@@ -39,6 +40,9 @@ const init = async () => {
         blinkIndicator.style.color = 'red';
       } else {
         blinkIndicator.style.color = 'green';
+      }
+      if (result.rate !== undefined) {
+        rateIndicator.textContent = result.rate;
       }
       // if (result.longBlink) {
       //   longBlinkIndicator.style.color = 'red';
