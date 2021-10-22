@@ -1,11 +1,7 @@
 body {
   margin: 0;
-  background: rgb(71, 53, 128);
-  background: radial-gradient(
-    circle,
-    rgba(71, 53, 128, 1) 0%,
-    rgba(26, 55, 83, 1) 100%
-  );
+  background: #f3f3f3;
+  background: radial-gradient(circle, #0987a0 0%, #2c5282 100%);
   font-family: 'Roboto', sans-serif;
 }
 
@@ -31,55 +27,17 @@ main {
   width: 95%;
 }
 
-.section-left {
-  background-color: rgb(40, 45, 80);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  grid-row-gap: 0;
-  grid-column-gap: 0.2em;
-}
-
-.section-right {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  grid-row-gap: 0;
-  grid-column-gap: 0.2em;
-}
-
-.section-left p,
-.section-right p {
-  color: white;
-  font-size: 0.9em;
-}
-
-.output {
-  padding: 1em;
-  display: block;
-  margin: 0 auto;
-  background-color: rgb(44, 57, 102);
-  border: none;
-  box-shadow: none;
-  color: white;
-  width: 100%;
-  text-align: center;
-  border-radius: 5px 5px 0 0;
-  font-size: 20px;
-  font-family: 'Roboto', sans-serif;
-}
-
 .info {
   text-align: center;
 }
 
 .info {
   font-size: 18px;
-  color: rgb(105, 223, 242);
+  color: #e9d8fd;
   font-weight: 300;
 }
 .info a {
-  color: rgb(105, 223, 242);
+  color: #e9d8fd;
 }
 
 .instruction {
@@ -100,6 +58,23 @@ main {
   color: lightgray;
   animation: blink 1.5s ease-in-out infinite;
   margin: 0;
+}
+
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  visibility: hidden;
+  width: auto;
+  height: auto;
+  display: none;
+}
+
+.rate-container {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-top: -10%;
+  color: #d6bcfa;
 }
 
 @keyframes blink {
@@ -145,20 +120,8 @@ main {
     justify-content: center;
     margin-top: 0;
   }
-
-  .section-left {
-    grid-column-gap: 0;
-    grid-row-gap: 2em;
-  }
-
-  .section-right {
-    grid-column-gap: 0;
-    grid-row-gap: 2em;
-  }
 }
 
-/* bigger screens */
-/* @media (min-device-width: 667px) { */
 @media (min-device-width: 1025px) {
   h1 {
     padding-top: 1em;
@@ -176,27 +139,6 @@ main {
 
   #main {
     max-width: 900px;
-  }
-
-  .section-left {
-    grid-column-gap: 0;
-    grid-row-gap: 2em;
-  }
-
-  .section-right {
-    grid-column-gap: 0;
-    grid-row-gap: 2em;
-  }
-
-  .section-left p,
-  .section-right p {
-    color: white;
-    font-size: 20px;
-  }
-
-  .output {
-    padding: 2em;
-    font-size: 20px;
   }
 }
 

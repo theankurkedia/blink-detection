@@ -84333,7 +84333,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 let model, video, event, blinkRate;
 const VIDEO_SIZE = 500;
-let blinked = false;
+let blinkCount = 0;
 let tempBlinkRate = 0;
 let rendering = true;
 let rateInterval;
@@ -84396,17 +84396,18 @@ function getEAR(upper, lower) {
   return (getEucledianDistance(upper[5][0], upper[5][1], lower[4][0], lower[4][1]) + getEucledianDistance(upper[3][0], upper[3][1], lower[2][0], lower[2][1])) / (2 * getEucledianDistance(upper[0][0], upper[0][1], upper[8][0], upper[8][1]));
 }
 
-function getIsVoluntaryBlink(blinkDetected) {
-  // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
-  // NOTE: adding this to separate intentional blinks
+function isVoluntaryBlink(blinkDetected) {
+  // NOTE: checking if blink is detected in atleast 5 consecutive cycles, values lesser than that can be considered a normal blink.
+  // NOTE: adding this to distinguish intentional blinks
   if (blinkDetected) {
-    if (blinked) {
+    blinkCount++;
+
+    if (blinkCount > 4) {
+      blinkCount = 0;
       return true;
     }
-
-    blinked = true;
   } else {
-    blinked = false;
+    blinkCount = 0;
   }
 
   return false;
@@ -84446,7 +84447,7 @@ async function renderPrediction() {
           right: rightEAR <= EAR_THRESHOLD,
           wink: leftEAR <= EAR_THRESHOLD || rightEAR <= EAR_THRESHOLD,
           blink: blinked,
-          longBlink: getIsVoluntaryBlink(blinked),
+          longBlink: isVoluntaryBlink(blinked),
           rate: blinkRate
         };
       });
@@ -84482,6 +84483,20 @@ const updateModelStatus = () => {
 };
 
 const videoElement = document.querySelector('video');
+
+function toggleMode() {
+  let style = document.getElementById('dark-mode-style');
+
+  if (style) {
+    style.remove();
+  } else {
+    style = document.createElement('STYLE');
+    style.setAttribute('id', 'dark-mode-style'), style.type = 'text/css';
+    style.appendChild(document.createTextNode('html { filter: invert(1) hue-rotate(180deg); color-scheme: dark;}'));
+    document.getElementsByTagName('html')[0].appendChild(style);
+  }
+}
+
 var raf;
 
 const init = async () => {
@@ -84495,30 +84510,29 @@ const init = async () => {
   // }
   // let leftEye = document.getElementById('left-eye');
   // let rightEye = document.getElementById('right-eye');
+  // let blinkIndicator = document.getElementById('blink-indicator');
 
-  let blinkIndicator = document.getElementById('blink-indicator'); // let longBlinkIndicator = document.getElementById('long-blink-indicator');
-
-  let rateIndicator = document.getElementById('blink-rate'); // let winkIndicator = document.getElementById('wink-indicator');
+  let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  let rateIndicator = document.getElementById('blink-rate');
+  let body = document.getElementsByTagName('body'); // let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
     let result = await _index.default.getBlinkPrediction();
     updateModelStatus();
 
     if (result) {
-      if (result.blink) {
-        blinkIndicator.style.color = 'red';
-      } else {
-        blinkIndicator.style.color = 'green';
-      }
-
+      // if (result.blink) {
+      //   blinkIndicator.style.color = 'red';
+      // } else {
+      //   blinkIndicator.style.color = 'green';
+      // }
       if (result.rate !== undefined) {
         rateIndicator.textContent = result.rate;
-      } // if (result.longBlink) {
-      //   longBlinkIndicator.style.color = 'red';
-      // } else {
-      //   longBlinkIndicator.style.color = 'green';
-      // }
-      // if (result.wink) {
+      }
+
+      if (result.longBlink) {
+        toggleMode();
+      } // if (result.wink) {
       //   winkIndicator.style.color = 'red';
       // } else {
       //   winkIndicator.style.color = 'green';

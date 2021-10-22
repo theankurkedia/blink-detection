@@ -92,6 +92,7 @@ function isVoluntaryBlink(blinkDetected) {
   if (blinkDetected) {
     blinkCount++;
     if (blinkCount > 4) {
+      blinkCount = 0;
       return true;
     }
   } else {

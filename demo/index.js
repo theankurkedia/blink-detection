@@ -11,6 +11,22 @@ const updateModelStatus = () => {
 
 const videoElement = document.querySelector('video');
 
+function toggleMode() {
+  let style = document.getElementById('dark-mode-style');
+  if (style) {
+    style.remove();
+  } else {
+    style = document.createElement('STYLE');
+    style.setAttribute('id', 'dark-mode-style'), (style.type = 'text/css');
+    style.appendChild(
+      document.createTextNode(
+        'html { filter: invert(1) hue-rotate(180deg); color-scheme: dark;}'
+      )
+    );
+    document.getElementsByTagName('html')[0].appendChild(style);
+  }
+}
+
 var raf;
 const init = async () => {
   await blink.loadModel();
@@ -26,29 +42,27 @@ const init = async () => {
 
   // let leftEye = document.getElementById('left-eye');
   // let rightEye = document.getElementById('right-eye');
-  let blinkIndicator = document.getElementById('blink-indicator');
-  // let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  // let blinkIndicator = document.getElementById('blink-indicator');
+  let longBlinkIndicator = document.getElementById('long-blink-indicator');
   let rateIndicator = document.getElementById('blink-rate');
+  let body = document.getElementsByTagName('body');
   // let winkIndicator = document.getElementById('wink-indicator');
-
   const predict = async () => {
     let result = await blink.getBlinkPrediction();
     updateModelStatus();
 
     if (result) {
-      if (result.blink) {
-        blinkIndicator.style.color = 'red';
-      } else {
-        blinkIndicator.style.color = 'green';
-      }
+      // if (result.blink) {
+      //   blinkIndicator.style.color = 'red';
+      // } else {
+      //   blinkIndicator.style.color = 'green';
+      // }
       if (result.rate !== undefined) {
         rateIndicator.textContent = result.rate;
       }
-      // if (result.longBlink) {
-      //   longBlinkIndicator.style.color = 'red';
-      // } else {
-      //   longBlinkIndicator.style.color = 'green';
-      // }
+      if (result.longBlink) {
+        toggleMode();
+      }
 
       // if (result.wink) {
       //   winkIndicator.style.color = 'red';
