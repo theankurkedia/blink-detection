@@ -4,7 +4,7 @@ import '@tensorflow/tfjs-backend-webgl';
 
 let model, video, event, blinkRate;
 const VIDEO_SIZE = 500;
-let blinked = false;
+let blinkCount = 0;
 let tempBlinkRate = 0;
 let rendering = true;
 let rateInterval;
@@ -86,18 +86,18 @@ function getEAR(upper, lower) {
   );
 }
 
-function getIsVoluntaryBlink(blinkDetected) {
-  // NOTE: checking if blink is detected twice in a row, anything more than that takes more deleberate effort by user.
-  // NOTE: adding this to separate intentional blinks
+function isVoluntaryBlink(blinkDetected) {
+  // NOTE: checking if blink is detected in atleast 5 consecutive cycles, values lesser than that can be considered a normal blink.
+  // NOTE: adding this to distinguish intentional blinks
   if (blinkDetected) {
-    if (blinked) {
+    blinkCount++;
+    if (blinkCount > 4) {
+      blinkCount = 0;
       return true;
     }
-    blinked = true;
   } else {
-    blinked = false;
+    blinkCount = 0;
   }
-
   return false;
 }
 
@@ -136,7 +136,7 @@ async function renderPrediction() {
           right: rightEAR <= EAR_THRESHOLD,
           wink: leftEAR <= EAR_THRESHOLD || rightEAR <= EAR_THRESHOLD,
           blink: blinked,
-          longBlink: getIsVoluntaryBlink(blinked),
+          longBlink: isVoluntaryBlink(blinked),
           rate: blinkRate,
         };
       });
