@@ -1,7 +1,6 @@
 body {
   margin: 0;
   background: #f3f3f3;
-  background: radial-gradient(circle, #0987a0 0%, #2c5282 100%);
   font-family: 'Roboto', sans-serif;
 }
 
@@ -10,7 +9,7 @@ h1 {
   width: 85%;
   margin: 0.5em auto;
   padding: 0;
-  color: rgb(255, 255, 255);
+  color: #000000;
   font-weight: 400;
   text-align: center;
 }
@@ -33,11 +32,11 @@ main {
 
 .info {
   font-size: 18px;
-  color: #e9d8fd;
+  color: #00b5d8;
   font-weight: 300;
 }
 .info a {
-  color: #e9d8fd;
+  color: #00b5d8;
 }
 
 .instruction {
@@ -55,7 +54,7 @@ main {
 }
 
 .model-status {
-  color: lightgray;
+  color: #2d3748;
   animation: blink 1.5s ease-in-out infinite;
   margin: 0;
 }
@@ -74,7 +73,7 @@ video {
   justify-content: center;
   font-size: 1.5rem;
   margin-top: -10%;
-  color: #d6bcfa;
+  color: #0bc5ea;
 }
 
 @keyframes blink {
