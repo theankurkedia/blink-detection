@@ -26,7 +26,7 @@ const loadModel = async () => {
   );
 };
 
-const setUpCamera = async (videoElement, webcamId = undefined) => {
+const setUpCamera = async (videoElement) => {
   video = videoElement;
   const mediaDevices = await navigator.mediaDevices.enumerateDevices();
 
@@ -35,7 +35,7 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
       device.kind === 'videoinput' && device.label.includes('Built-in')
   );
 
-  const cameraId = defaultWebcam ? defaultWebcam.deviceId : webcamId;
+  const cameraId = defaultWebcam ? defaultWebcam?.deviceId : undefined;
 
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
@@ -49,9 +49,10 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
 
   video.srcObject = stream;
   video.play();
-  video.width = 500;
-  video.height = 500;
+  video.width = VIDEO_SIZE;
+  video.height = VIDEO_SIZE;
 
+  // Change it, since it does not expect anything to return
   return new Promise((resolve) => {
     video.onloadedmetadata = () => {
       resolve(video);
@@ -122,7 +123,7 @@ async function renderPrediction() {
         let lowerRight = prediction.annotations.rightEyeUpper0;
         let upperRight = prediction.annotations.rightEyeLower0;
         const rightEAR = getEAR(upperRight, lowerRight);
-
+        // TODO: log this prediction
         let lowerLeft = prediction.annotations.leftEyeUpper0;
         let upperLeft = prediction.annotations.leftEyeLower0;
         const leftEAR = getEAR(upperLeft, lowerLeft);
