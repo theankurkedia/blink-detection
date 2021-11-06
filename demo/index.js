@@ -13,10 +13,13 @@ const videoElement = document.querySelector('video');
 
 function toggleMode() {
   let style = document.getElementById('dark-mode-style');
+  let currentMode = document.getElementById('current-mode');
   if (style) {
     style.remove();
+    currentMode.textContent = 'Light';
   } else {
     style = document.createElement('STYLE');
+    currentMode.textContent = 'Dark';
     style.setAttribute('id', 'dark-mode-style'), (style.type = 'text/css');
     style.appendChild(
       document.createTextNode(
@@ -43,8 +46,8 @@ const init = async () => {
   // let leftEye = document.getElementById('left-eye');
   // let rightEye = document.getElementById('right-eye');
   // let blinkIndicator = document.getElementById('blink-indicator');
-  let longBlinkIndicator = document.getElementById('long-blink-indicator');
-  let rateIndicator = document.getElementById('blink-rate');
+  // let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  // let rateIndicator = document.getElementById('blink-rate');
   let body = document.getElementsByTagName('body');
   // let winkIndicator = document.getElementById('wink-indicator');
   const predict = async () => {
@@ -57,9 +60,9 @@ const init = async () => {
       // } else {
       //   blinkIndicator.style.color = 'green';
       // }
-      if (result.rate !== undefined) {
-        rateIndicator.textContent = result.rate;
-      }
+      // if (result.rate !== undefined) {
+      //   rateIndicator.textContent = result.rate;
+      // }
       if (result.longBlink) {
         toggleMode();
       }
