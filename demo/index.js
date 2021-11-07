@@ -13,10 +13,13 @@ const videoElement = document.querySelector('video');
 
 function toggleMode() {
   let style = document.getElementById('dark-mode-style');
+  let currentMode = document.getElementById('current-mode');
   if (style) {
     style.remove();
+    currentMode.textContent = 'Light';
   } else {
     style = document.createElement('STYLE');
+    currentMode.textContent = 'Dark';
     style.setAttribute('id', 'dark-mode-style'), (style.type = 'text/css');
     style.appendChild(
       document.createTextNode(
@@ -32,21 +35,8 @@ const init = async () => {
   await blink.loadModel();
   await blink.setUpCamera(videoElement);
 
-  // let stopButton = document.getElementById('stop-button');
-  // if (stopButton) {
-  //   stopButton.addEventListener('click', () => {
-  //     cancelAnimationFrame(raf);
-  //     console.log('*** 🔥 testBucket', JSON.stringify(blink.testBucket));
-  //   });
-  // }
-
-  // let leftEye = document.getElementById('left-eye');
-  // let rightEye = document.getElementById('right-eye');
   // let blinkIndicator = document.getElementById('blink-indicator');
-  let longBlinkIndicator = document.getElementById('long-blink-indicator');
-  let rateIndicator = document.getElementById('blink-rate');
   let body = document.getElementsByTagName('body');
-  // let winkIndicator = document.getElementById('wink-indicator');
   const predict = async () => {
     let result = await blink.getBlinkPrediction();
     updateModelStatus();
@@ -57,29 +47,9 @@ const init = async () => {
       // } else {
       //   blinkIndicator.style.color = 'green';
       // }
-      if (result.rate !== undefined) {
-        rateIndicator.textContent = result.rate;
-      }
       if (result.longBlink) {
         toggleMode();
       }
-
-      // if (result.wink) {
-      //   winkIndicator.style.color = 'red';
-      // } else {
-      //   winkIndicator.style.color = 'green';
-      // }
-      // console.log('*** 🔥 rs', result.left, result.right);
-      // if (result.left) {
-      //   leftEye.style.color = 'red';
-      // } else {
-      //   leftEye.style.color = 'green';
-      // }
-      // if (result.right) {
-      //   rightEye.style.color = 'red';
-      // } else {
-      //   rightEye.style.color = 'green';
-      // }
     }
     raf = requestAnimationFrame(predict);
   };

@@ -84353,11 +84353,11 @@ const loadModel = async () => {
   });
 };
 
-const setUpCamera = async (videoElement, webcamId = undefined) => {
+const setUpCamera = async videoElement => {
   video = videoElement;
   const mediaDevices = await navigator.mediaDevices.enumerateDevices();
   const defaultWebcam = mediaDevices.find(device => device.kind === 'videoinput' && device.label.includes('Built-in'));
-  const cameraId = defaultWebcam ? defaultWebcam.deviceId : webcamId;
+  const cameraId = defaultWebcam ? defaultWebcam === null || defaultWebcam === void 0 ? void 0 : defaultWebcam.deviceId : undefined;
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
@@ -84369,8 +84369,9 @@ const setUpCamera = async (videoElement, webcamId = undefined) => {
   });
   video.srcObject = stream;
   video.play();
-  video.width = 500;
-  video.height = 500;
+  video.width = VIDEO_SIZE;
+  video.height = VIDEO_SIZE; // Change it, since it does not expect anything to return
+
   return new Promise(resolve => {
     video.onloadedmetadata = () => {
       resolve(video);
@@ -84427,12 +84428,14 @@ async function renderPrediction() {
         // NOTE: Iris position did not work as the diff remains almost same, so trying 0th upper and lower eyes
         // NOTE: Error in docs, rightEyeLower0 is mapped to rightEyeUpper0 and vice-versa
         // NOTE: taking center point for now, can add more points for accuracy(mabye)
-        // Other logic
+        console.log('*** 🔥 prediction', JSON.stringify(prediction)); // Other logic
         // NOTE: Found another way to detect it by Eye Aspect Ratio https://www.pyimagesearch.com/2017/04/24/eye-blink-detection-opencv-python-dlib/
         // NOTE: Found it to be more accurate and gives better prection in cases where earlier method did not work.
+
         let lowerRight = prediction.annotations.rightEyeUpper0;
         let upperRight = prediction.annotations.rightEyeLower0;
-        const rightEAR = getEAR(upperRight, lowerRight);
+        const rightEAR = getEAR(upperRight, lowerRight); // TODO: log this prediction
+
         let lowerLeft = prediction.annotations.leftEyeUpper0;
         let upperLeft = prediction.annotations.leftEyeLower0;
         const leftEAR = getEAR(upperLeft, lowerLeft);
@@ -84486,11 +84489,14 @@ const videoElement = document.querySelector('video');
 
 function toggleMode() {
   let style = document.getElementById('dark-mode-style');
+  let currentMode = document.getElementById('current-mode');
 
   if (style) {
     style.remove();
+    currentMode.textContent = 'Light';
   } else {
     style = document.createElement('STYLE');
+    currentMode.textContent = 'Dark';
     style.setAttribute('id', 'dark-mode-style'), style.type = 'text/css';
     style.appendChild(document.createTextNode('html { filter: invert(1) hue-rotate(180deg); color-scheme: dark;}'));
     document.getElementsByTagName('html')[0].appendChild(style);
@@ -84511,9 +84517,9 @@ const init = async () => {
   // let leftEye = document.getElementById('left-eye');
   // let rightEye = document.getElementById('right-eye');
   // let blinkIndicator = document.getElementById('blink-indicator');
+  // let longBlinkIndicator = document.getElementById('long-blink-indicator');
+  // let rateIndicator = document.getElementById('blink-rate');
 
-  let longBlinkIndicator = document.getElementById('long-blink-indicator');
-  let rateIndicator = document.getElementById('blink-rate');
   let body = document.getElementsByTagName('body'); // let winkIndicator = document.getElementById('wink-indicator');
 
   const predict = async () => {
@@ -84526,10 +84532,9 @@ const init = async () => {
       // } else {
       //   blinkIndicator.style.color = 'green';
       // }
-      if (result.rate !== undefined) {
-        rateIndicator.textContent = result.rate;
-      }
-
+      // if (result.rate !== undefined) {
+      //   rateIndicator.textContent = result.rate;
+      // }
       if (result.longBlink) {
         toggleMode();
       } // if (result.wink) {
