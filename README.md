@@ -45,7 +45,7 @@ const videoElement = document.querySelector('video');
 
 const init = async () => {
   // Using the default webcam
-  await gaze.setUpCamera(videoElement);
+  await blink.setUpCamera(videoElement);
 
   // Or, using more camera input devices
   const mediaDevices = await navigator.mediaDevices.enumerateDevices();
@@ -55,7 +55,7 @@ const init = async () => {
       device.label.includes(/* The label from the list of available devices*/)
   );
 
-  await gaze.setUpCamera(videoElement, camera.deviceId);
+  await blink.setUpCamera(videoElement, camera.deviceId);
 };
 ```
 
