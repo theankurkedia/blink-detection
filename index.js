@@ -17,12 +17,25 @@ function initBlinkRateCalculator() {
   }, 10000);
 }
 
-const loadModel = async () => {
+/**
+ * Load the machine learning model
+ * @param {Object} c - a configuration object, could be used to define custom model urls.
+ * Has properties:
+ * - `modelUrl` - custom facemesh model url or a `tf.io.IOHandler` object
+ * - `irisModelUrl` - custom iris model url or a `tf.io.IOHandler` object
+ * - `detectorModelUrl` - custom blazeface model url or a `tf.io.IOHandler` object
+ */
+const loadModel = async (c) => {
   await tf.setBackend('webgl');
 
   model = await faceLandmarksDetection.load(
     faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
-    { maxFaces: 1 }
+    {
+      maxFaces: 1,
+      modelUrl: c.modelUrl ? c.modelUrl : null,
+      irisModelUrl: c.irisModelUrl ? c.irisModelUrl : null,
+      detectorModelUrl: c.detectorModelUrl ? c.detectorModelUrl : null,
+    }
   );
 };
 
