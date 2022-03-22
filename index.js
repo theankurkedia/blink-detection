@@ -68,8 +68,9 @@ const setUpCamera = async (videoElement) => {
   // Change it, since it does not expect anything to return
   return new Promise((resolve) => {
     video.onloadedmetadata = () => {
-      resolve(video);
       initBlinkRateCalculator();
+      rendering = true;
+      resolve(video);
     };
   });
 };
@@ -78,6 +79,7 @@ function stopPrediction() {
   rendering = false;
   clearInterval(rateInterval);
 }
+
 function updateBlinkRate() {
   tempBlinkRate++;
 }
