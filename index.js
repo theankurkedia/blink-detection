@@ -1,6 +1,6 @@
-import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
-import * as tf from "@tensorflow/tfjs-core";
-import "@tensorflow/tfjs-backend-webgl";
+import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
+import * as tf from '@tensorflow/tfjs-core';
+import '@tensorflow/tfjs-backend-webgl';
 
 let model, video, event, blinkRate;
 const VIDEO_SIZE = 500;
@@ -26,7 +26,7 @@ function initBlinkRateCalculator() {
  * - `detectorModelUrl` - custom blazeface model url or a `tf.io.IOHandler` object
  */
 const loadModel = async (c) => {
-  await tf.setBackend("webgl");
+  await tf.setBackend('webgl');
 
   model = await faceLandmarksDetection.load(
     faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
@@ -45,7 +45,7 @@ const setUpCamera = async (videoElement) => {
 
   const defaultWebcam = mediaDevices.find(
     (device) =>
-      device.kind === "videoinput" && device.label.includes("Built-in")
+      device.kind === 'videoinput' && device.label.includes('Built-in')
   );
 
   const cameraId = defaultWebcam ? defaultWebcam?.deviceId : undefined;
@@ -53,7 +53,7 @@ const setUpCamera = async (videoElement) => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
-      facingMode: "user",
+      facingMode: 'user',
       deviceId: cameraId,
       width: VIDEO_SIZE,
       height: VIDEO_SIZE,
